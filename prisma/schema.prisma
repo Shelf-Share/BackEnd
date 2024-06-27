@@ -12,3 +12,197 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Admin {
+  id            Int       @id @default(autoincrement())
+  name          String
+  email         String    @unique
+  password      String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  books         Book[]    @relation("ValidatedBy")
+  news          News[]
+  helpdesk      Helpdesk[]
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  name          String
+  email         String    @unique
+  password      String
+  imageUrl      String?   @map("image_url")
+  phoneNumber   String?   @map("phoneNumber")
+  address       String?
+  emailToken    String?   @map("email_token")
+  passwordToken String?   @map("password_token")
+  points        Int?
+  status        String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  donations     Donation[]
+  posts         CommunityPost[]
+  comments      Comment[]
+  likes         Like[]
+  rewardClaims  RewardClaim[]
+  messagesSent  Message[] @relation("MessagesSent")
+  messagesReceived Message[] @relation("MessagesReceived")
+  helpdesk      Helpdesk[]
+}
+
+model Book {
+  id           Int       @id @default(autoincrement())
+  title        String
+  author       String
+  ISBN         String
+  genre        String
+  description  String
+  imageUrl     String?   @map("image_url")
+  categoryId   Int
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  validatedBy  Admin?    @relation("ValidatedBy", fields: [validatedById], references: [id])
+  validatedById Int?
+
+  donations    Donation[]
+  category     Category  @relation(fields: [categoryId], references: [id])
+}
+
+model Donation {
+  id            Int       @id @default(autoincrement())
+  bookId        Int
+  userId        Int
+  recipientId   Int
+  date          DateTime
+  numberOfBooks Int
+  status        String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  book          Book      @relation(fields: [bookId], references: [id])
+  user          User      @relation(fields: [userId], references: [id])
+  recipient     Instansi  @relation(fields: [recipientId], references: [id])
+}
+
+model Instansi {
+  id            Int       @id @default(autoincrement())
+  name          String
+  address       String
+  phoneNumber   String?   @map("phoneNumber")
+  email         String
+  contactPerson String
+  description   String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  donations     Donation[]
+}
+
+model News {
+  id            Int       @id @default(autoincrement())
+  title         String
+  content       String
+  authorId      Int
+  imageUrl      String?   @map("image_url")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  author        Admin     @relation(fields: [authorId], references: [id])
+}
+
+model CommunityPost {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  title         String
+  content       String
+  imageUrl      String?   @map("image_url")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user          User      @relation(fields: [userId], references: [id])
+  comments      Comment[]
+  likes         Like[]
+}
+
+model Comment {
+  id            Int       @id @default(autoincrement())
+  postId        Int
+  userId        Int
+  content       String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  post          CommunityPost @relation(fields: [postId], references: [id])
+  user          User          @relation(fields: [userId], references: [id])
+}
+
+model Like {
+  id            Int       @id @default(autoincrement())
+  postId        Int
+  userId        Int
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  post          CommunityPost @relation(fields: [postId], references: [id])
+  user          User          @relation(fields: [userId], references: [id])
+}
+
+model RewardClaim {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  rewardId      Int
+  date          DateTime
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user          User      @relation(fields: [userId], references: [id])
+  reward        Reward    @relation(fields: [rewardId], references: [id])
+}
+
+model Reward {
+  id            Int       @id @default(autoincrement())
+  name          String
+  description   String
+  pointsRequired Int
+  category      String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  rewardClaims  RewardClaim[]
+}
+
+model Category {
+  id            Int       @id @default(autoincrement())
+  name          String
+  description   String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  books         Book[]
+}
+
+model Message {
+  id            Int       @id @default(autoincrement())
+  senderId      Int
+  recipientId   Int
+  content       String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sender        User      @relation("MessagesSent", fields: [senderId], references: [id])
+  recipient     User      @relation("MessagesReceived", fields: [recipientId], references: [id])
+}
+
+model Helpdesk {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  question      String
+  answer        String
+  adminId       Int
+  status        String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user          User      @relation(fields: [userId], references: [id])
+  admin         Admin     @relation(fields: [adminId], references: [id])
+}
+
