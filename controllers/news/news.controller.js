@@ -28,5 +28,29 @@ module.exports = {
         } catch(err) {
             next(err);
         }
-    }   
+    },
+    
+    getNewsDetails: async(req, res, next) => {
+        let {id} = req.params;
+        try{
+            let news = await prisma.news.findUnique({where: {id: Number(id)}});
+            if(!news) {
+                res.status(404).json({
+                    status: false,
+                    message: 'Not Found',
+                    err: `News with id ${id} doesn\'t exist!`,
+                    data: null
+                });
+            }
+
+            res.status(200).json({
+                status: true,
+                message: 'OK',
+                err: null,
+                data: {news}
+            })
+        } catch(err){
+            next(err);
+        }
+    }
 };
