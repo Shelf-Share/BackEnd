@@ -6,3 +6,7 @@ Content-Type: application/json
 ### Show All News
 GET http://localhost:3000/api/v1/news?limit=2&page=2
 Content-Type: application/json
+
+### Show News Detail
+GET http://localhost:3000/api/v1/news/3
+Content-Type: application/json 

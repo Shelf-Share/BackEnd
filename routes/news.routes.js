@@ -1,6 +1,7 @@
 const router = require('express').Router();
-const {getAllNews} = require('../controllers/news/news.controller');
+const {getAllNews, getNewsDetails} = require('../controllers/news/news.controller');
 
 router.get('/', getAllNews);
+router.get('/:id', getNewsDetails);
 
 module.exports = router;
