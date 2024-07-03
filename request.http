@@ -4,9 +4,35 @@ GET http://localhost:3000/api/v1/category
 Content-Type: application/json
 
 ### Show All News
-GET http://localhost:3000/api/v1/news?limit=2&page=2
+GET http://localhost:3000/api/v1/news?limit=10&page=1
 Content-Type: application/json
 
 ### Show News Detail
 GET http://localhost:3000/api/v1/news/3
-Content-Type: application/json 
+Content-Type: application/json
+
+### Add News
+POST http://localhost:3000/api/v1/news
+Content-Type: application/json
+
+{
+    "title": "Tere Liye Membuat gempar dunia buku",
+    "content": "Tere Liye yang dikenal sebagai salah satu asdkalsldlasld",
+    "authorId": 2,
+    "image_url": "image1"
+}
+
+### Update News
+PUT http://localhost:3000/api/v1/news/6
+Content-Type: application/json
+
+{
+    "title": "Tere Liye Membuat gempar dunia buku",
+    "content": "Tere Liye yang dikenal sebagai salah satu asdkalsldlasld",
+    "authorId": 2,
+    "image_url": "image1"
+}
+
+### Delete News
+DELETE http://localhost:3000/api/v1/news/7
+Content-Type: application/json
