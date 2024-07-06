@@ -5,7 +5,7 @@ const {imagekit} = require('../../libs/imagekit');
 module.exports = {
     addAgency: async(req, res, next) => {
         try {
-            let {name, address, phoneNumber, email, contactPerson, description} = req.body;
+            let {name, address, phoneNumber, email, contactPerson, description, imageUrl} = req.body;
 
             if(!name || !address || !email || !contactPerson || !description){
                 return res.status(400).json({
@@ -33,7 +33,14 @@ module.exports = {
             });
 
             let newAgency = await prisma.agency.create({
-                
+                data: {
+                    name,
+                    address,
+                    phoneNumber,
+                    email,
+                    contactPerson,
+                    description
+                }
             })
         } catch(err) {
             next(err);

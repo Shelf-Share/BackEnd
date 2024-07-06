@@ -190,6 +190,7 @@ model Donation {
 model Agency {
   id            Int       @id @default(autoincrement())
   name          String
+  imageUrl      String
   address       String
   phoneNumber   String?   @map("phoneNumber")
   email         String
